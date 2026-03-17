@@ -26,9 +26,12 @@ jobs:
           Expand-Archive -Path dalamud.zip -DestinationPath dalamud -Force
 
       - name: Build
-        run: dotnet build --configuration Release
+        run: dotnet build --configuration Release -p:Platform=x64
         env:
           DALAMUD_HOME: ${{ github.workspace }}\dalamud
+
+      - name: List build output
+        run: Get-ChildItem -Recurse bin | Select-Object FullName
 
       - name: Upload Release
         if: startsWith(github.ref, 'refs/tags/')
