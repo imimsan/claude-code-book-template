@@ -20,8 +20,15 @@ jobs:
         with:
           dotnet-version: '9.x'
 
+      - name: Download Dalamud
+        run: |
+          Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/latest.zip -OutFile dalamud.zip
+          Expand-Archive -Path dalamud.zip -DestinationPath dalamud -Force
+
       - name: Build
         run: dotnet build --configuration Release
+        env:
+          DalamudLibPath: ${{ github.workspace }}\dalamud\
 
       - name: Get version
         id: version
