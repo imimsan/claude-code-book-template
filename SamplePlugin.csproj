@@ -14,11 +14,29 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="$(DalamudLibPath)Dalamud.dll"><Private>false</Private></Reference>
-    <Reference Include="$(DalamudLibPath)ImGui.NET.dll"><Private>false</Private></Reference>
-    <Reference Include="$(DalamudLibPath)ImGuiScene.dll"><Private>false</Private></Reference>
-    <Reference Include="$(DalamudLibPath)FFXIVClientStructs.dll"><Private>false</Private></Reference>
-    <Reference Include="$(DalamudLibPath)Lumina.dll"><Private>false</Private></Reference>
-    <Reference Include="$(DalamudLibPath)Lumina.Excel.dll"><Private>false</Private></Reference>
+    <Reference Include="Dalamud">
+      <HintPath>$(DalamudLibPath)Dalamud.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="ImGui.NET">
+      <HintPath>$(DalamudLibPath)ImGui.NET.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="ImGuiScene">
+      <HintPath>$(DalamudLibPath)ImGuiScene.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="FFXIVClientStructs">
+      <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Lumina">
+      <HintPath>$(DalamudLibPath)Lumina.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Lumina.Excel">
+      <HintPath>$(DalamudLibPath)Lumina.Excel.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
 </Project>
