@@ -1,6 +1,7 @@
 {
   "Author": "YourName",
   "Name": "Sample Plugin",
+  "Punchline": "A simple sample plugin.",
   "Description": "A simple Dalamud plugin that displays a window.",
   "InternalName": "SamplePlugin",
   "AssemblyVersion": "1.0.0.0",
