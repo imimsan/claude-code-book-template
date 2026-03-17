@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>SamplePlugin</AssemblyName>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DalamudPackager" Version="2.1.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="$(DalamudLibPath)Dalamud.dll"><Private>false</Private></Reference>
+    <Reference Include="$(DalamudLibPath)ImGui.NET.dll"><Private>false</Private></Reference>
+    <Reference Include="$(DalamudLibPath)ImGuiScene.dll"><Private>false</Private></Reference>
+    <Reference Include="$(DalamudLibPath)FFXIVClientStructs.dll"><Private>false</Private></Reference>
+    <Reference Include="$(DalamudLibPath)Lumina.dll"><Private>false</Private></Reference>
+    <Reference Include="$(DalamudLibPath)Lumina.Excel.dll"><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

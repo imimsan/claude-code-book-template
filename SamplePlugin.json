@@ -1,0 +1,12 @@
+{
+  "Author": "YourName",
+  "Name": "Sample Plugin",
+  "Description": "A simple Dalamud plugin that displays a window.",
+  "InternalName": "SamplePlugin",
+  "AssemblyVersion": "1.0.0.0",
+  "RepoUrl": "https://github.com/imimsan/claude-code-book-template",
+  "Tags": [],
+  "CategoryTags": [],
+  "DalamudApiLevel": 9,
+  "LoadSync": false
+}
