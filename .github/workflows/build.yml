@@ -18,18 +18,10 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.x'
-
-      - name: Download Dalamud
-        run: |
-          Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/latest.zip -OutFile dalamud.zip
-          Expand-Archive -Path dalamud.zip -DestinationPath dalamud -Force
-          Get-ChildItem dalamud | Select-Object Name
+          dotnet-version: '9.x'
 
       - name: Build
         run: dotnet build --configuration Release
-        env:
-          DalamudLibPath: ${{ github.workspace }}\dalamud\
 
       - name: Get version
         id: version
