@@ -24,11 +24,12 @@ jobs:
         run: |
           Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/stg/latest.zip -OutFile dalamud.zip
           Expand-Archive -Path dalamud.zip -DestinationPath dalamud -Force
+          Get-ChildItem dalamud | Select-Object Name
 
       - name: Build
         run: dotnet build --configuration Release
         env:
-          DalamudLibPath: ${{ github.workspace }}/dalamud/
+          DalamudLibPath: ${{ github.workspace }}\dalamud\
 
       - name: Get version
         id: version
