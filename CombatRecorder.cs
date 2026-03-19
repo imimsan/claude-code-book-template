@@ -69,11 +69,11 @@ public class CombatRecorder : IDisposable
     // コンストラクタ
     // -----------------------------------------------------------------------
     public CombatRecorder(
-        IDutyState   dutyState,
-        IClientState clientState,
-        IGameInterop gameInterop,
-        IPluginLog   log,
-        ZoneStorage  storage)
+        IDutyState            dutyState,
+        IClientState          clientState,
+        IGameInteropProvider  gameInterop,
+        IPluginLog            log,
+        ZoneStorage           storage)
     {
         _dutyState   = dutyState;
         _clientState = clientState;

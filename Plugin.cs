@@ -16,7 +16,7 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] private ICommandManager         CommandManager  { get; init; } = null!;
     [PluginService] private IDutyState              DutyState       { get; init; } = null!;
     [PluginService] private IClientState            ClientState     { get; init; } = null!;
-    [PluginService] private IGameInterop            GameInterop     { get; init; } = null!;
+    [PluginService] private IGameInteropProvider    GameInterop     { get; init; } = null!;
     [PluginService] private IDataManager            DataManager     { get; init; } = null!;
     [PluginService] private IPluginLog              Log             { get; init; } = null!;
 
