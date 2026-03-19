@@ -107,7 +107,11 @@ public class CombatRecorder : IDisposable
     // -----------------------------------------------------------------------
     private void OnDutyStarted(object? sender, ushort territoryId)   => StartPull(territoryId);
     private void OnDutyCompleted(object? sender, ushort territoryId) => EndPull(save: true);
-    private void OnDutyWiped(object? sender, ushort territoryId)     => EndPull(save: true);
+    private void OnDutyWiped(object? sender, ushort territoryId)
+    {
+        EndPull(save: true);
+        StartPull(territoryId); // ワイプ後、次のプルを即座に開始
+    }
 
     private void StartPull(ushort zoneId)
     {

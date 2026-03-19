@@ -75,6 +75,7 @@ public class PlanAnalyzer
                     Time       = bucketCenter,
                     ActionId   = best.Key.actionId,
                     ActionName = GetActionName(best.Key.actionId),
+                    IconId     = GetIconId(best.Key.actionId),
                     Count      = best.Value,
                     Total      = totalPulls,
                 };
@@ -90,9 +91,8 @@ public class PlanAnalyzer
     {
         try
         {
-            var sheet = _dataManager.GetExcelSheet<Lumina.Excel.Sheets.Action>();
-            var row   = sheet?.GetRow(actionId);
-            var name  = row?.Name.ToString();
+            var row  = _dataManager.GetExcelSheet<Lumina.Excel.Sheets.Action>()?.GetRow(actionId);
+            var name = row?.Name.ToString();
             if (!string.IsNullOrWhiteSpace(name))
                 return name;
         }
@@ -101,5 +101,20 @@ public class PlanAnalyzer
             _log.Warning(ex, $"[HealPlan] アクション名取得失敗: {actionId}");
         }
         return $"Action#{actionId}";
+    }
+
+    private uint GetIconId(uint actionId)
+    {
+        try
+        {
+            var row = _dataManager.GetExcelSheet<Lumina.Excel.Sheets.Action>()?.GetRow(actionId);
+            if (row.HasValue)
+                return row.Value.Icon;
+        }
+        catch (Exception ex)
+        {
+            _log.Warning(ex, $"[HealPlan] アイコンID取得失敗: {actionId}");
+        }
+        return 0;
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Windowing;
+using Dalamud.Plugin.Services;
 using HealPlan.Models;
 
 namespace HealPlan.Windows;
@@ -14,6 +15,8 @@ namespace HealPlan.Windows;
 /// </summary>
 public class TimelineWindow : Window, IDisposable
 {
+    private readonly ITextureProvider _textureProvider;
+
     private List<RecommendedAction> _recommendations = new();
     private float _currentTime;
 
@@ -23,7 +26,10 @@ public class TimelineWindow : Window, IDisposable
     /// <summary>この秒数以内に迫っているアクションをハイライト</summary>
     private const float HighlightThreshold = 5f;
 
-    public TimelineWindow()
+    /// <summary>アイコンの表示サイズ（ピクセル）</summary>
+    private static readonly Vector2 IconSize = new(32, 32);
+
+    public TimelineWindow(ITextureProvider textureProvider)
         : base(
             "HealPlan タイムライン##timeline",
             ImGuiWindowFlags.NoDecoration
@@ -32,6 +38,7 @@ public class TimelineWindow : Window, IDisposable
             | ImGuiWindowFlags.NoFocusOnAppearing
             | ImGuiWindowFlags.NoNav)
     {
+        _textureProvider = textureProvider;
         IsOpen = false;
     }
 
@@ -79,21 +86,50 @@ public class TimelineWindow : Window, IDisposable
         var isNear   = timeLeft is >= -2f and <= HighlightThreshold;
         var isPast   = timeLeft < -2f;
 
-        // --- 時刻ラベル ---
-        var timeColor = isNear  ? new Vector4(1f,   0.5f, 0.2f, 1f)
-                      : isPast  ? new Vector4(0.5f, 0.5f, 0.5f, 0.7f)
-                      :           new Vector4(0.8f, 0.9f, 1f,   1f);
-        ImGui.TextColored(timeColor, $" T+{rec.Time:F0}s");
+        // --- アイコン ---
+        var iconDrawn = false;
+        if (rec.IconId > 0)
+        {
+            try
+            {
+                var tex = _textureProvider.GetFromGameIcon(new GameIconLookup(rec.IconId));
+                if (tex is { IsImGuiHandleValid: true })
+                {
+                    var tint = isPast ? new Vector4(0.5f, 0.5f, 0.5f, 0.5f) : Vector4.One;
+                    ImGui.Image(tex.ImGuiHandle, IconSize, Vector2.Zero, Vector2.One, tint);
+                    iconDrawn = true;
+                }
+            }
+            catch
+            {
+                // アイコン読み込み失敗はスキップ
+            }
+        }
 
-        // --- アクション名 ---
+        // アイコンが取得できなかった場合はプレースホルダーを描画
+        if (!iconDrawn)
+        {
+            ImGui.Dummy(IconSize);
+        }
+
         ImGui.SameLine();
-        var nameColor = isNear  ? new Vector4(1f,   0.8f, 0.3f, 1f)
+
+        // --- 時刻 + アクション名 ---
+        var textColor = isNear  ? new Vector4(1f,   0.8f, 0.3f, 1f)
                       : isPast  ? new Vector4(0.5f, 0.5f, 0.5f, 0.7f)
                       :           new Vector4(1f,   1f,   1f,   1f);
-        ImGui.TextColored(nameColor, $"[{rec.ActionName}]");
+
+        var cursorY = ImGui.GetCursorPosY();
+        ImGui.SetCursorPosY(cursorY + (IconSize.Y - ImGui.GetTextLineHeight() * 2 + 2) / 2);
+
+        ImGui.BeginGroup();
+        ImGui.TextColored(new Vector4(0.7f, 0.85f, 1f, isPast ? 0.6f : 1f), $"T+{rec.Time:F0}s");
+        ImGui.TextColored(textColor, rec.ActionName);
+        ImGui.EndGroup();
 
         // --- 確度プログレスバー ---
         ImGui.SameLine();
+        ImGui.SetCursorPosY(cursorY + (IconSize.Y - ImGui.GetFrameHeight()) / 2);
         var barColor = rec.Confidence >= 0.8f ? new Vector4(0.2f, 0.9f, 0.3f, 0.8f)
                      : rec.Confidence >= 0.5f ? new Vector4(0.9f, 0.8f, 0.2f, 0.8f)
                      :                          new Vector4(0.7f, 0.7f, 0.7f, 0.6f);

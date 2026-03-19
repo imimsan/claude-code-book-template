@@ -14,6 +14,9 @@ public class RecommendedAction
     /// <summary>表示用アクション名</summary>
     public string ActionName { get; set; } = string.Empty;
 
+    /// <summary>アクションアイコン ID（ゲームアイコンスプライト番号）</summary>
+    public uint IconId { get; set; }
+
     /// <summary>このバケツで使用されたプル数</summary>
     public int Count { get; set; }
 

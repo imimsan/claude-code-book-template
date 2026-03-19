@@ -21,6 +21,7 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] private IDataManager            DataManager     { get; init; } = null!;
     [PluginService] private IPluginLog              Log             { get; init; } = null!;
     [PluginService] private IChatGui               ChatGui         { get; init; } = null!;
+    [PluginService] private ITextureProvider       TextureProvider { get; init; } = null!;
 
     private const string CommandName = "/healplan";
 
@@ -48,7 +49,7 @@ public sealed class Plugin : IDalamudPlugin
         _recorder.PullCompleted += OnPullCompleted;
 
         _mainWindow     = new MainWindow(_config, _storage, PluginInterface, Log);
-        _timelineWindow = new TimelineWindow();
+        _timelineWindow = new TimelineWindow(TextureProvider);
         _windowSystem.AddWindow(_mainWindow);
         _windowSystem.AddWindow(_timelineWindow);
 
