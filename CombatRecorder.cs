@@ -24,15 +24,15 @@ public class CombatRecorder : IDisposable
     /// ActionManager::UseAction のデリゲート。
     /// 引数は FFXIVClientStructs の定義に準拠。
     /// </summary>
-    private unsafe delegate bool UseActionDelegate(
-        nint   actionManager,      // ActionManager*
-        uint   actionType,         // ActionType enum (1 = Action)
-        uint   actionId,           // アクション行 ID
-        ulong  targetId,           // ターゲットの GameObjectID
-        uint   extraParam,
-        uint   useActionMode,
-        uint   comboRouteId,
-        bool*  outOptAreaTargeted);
+    private delegate bool UseActionDelegate(
+        nint  actionManager,      // ActionManager*
+        uint  actionType,         // ActionType enum (1 = Action)
+        uint  actionId,           // アクション行 ID
+        ulong targetId,           // ターゲットの GameObjectID
+        uint  extraParam,
+        uint  useActionMode,
+        uint  comboRouteId,
+        nint  outOptAreaTargeted); // bool* — nint で受け取り unsafe 不要にする
 
     /// <summary>
     /// UseAction のシグネチャ。
@@ -140,7 +140,7 @@ public class CombatRecorder : IDisposable
     // -----------------------------------------------------------------------
     // UseAction デトゥール
     // -----------------------------------------------------------------------
-    private unsafe bool UseActionDetour(
+    private bool UseActionDetour(
         nint  actionManager,
         uint  actionType,
         uint  actionId,
@@ -148,7 +148,7 @@ public class CombatRecorder : IDisposable
         uint  extraParam,
         uint  useActionMode,
         uint  comboRouteId,
-        bool* outOptAreaTargeted)
+        nint  outOptAreaTargeted)
     {
         // オリジナルを先に呼び出す
         var result = _useActionHook!.Original(

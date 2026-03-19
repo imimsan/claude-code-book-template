@@ -3,5 +3,6 @@
     <AssemblyName>HealPlan</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>CA1416</NoWarn>
   </PropertyGroup>
 </Project>
