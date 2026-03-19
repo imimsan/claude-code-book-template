@@ -1,0 +1,13 @@
+{
+  "Author": "YourName",
+  "Name": "HealPlan",
+  "Punchline": "ヒールワーク記録・タイムライン表示プラグイン",
+  "Description": "高難度レイドのヒール練習をサポート。アクション使用を自動記録し、積み重ねから推奨タイムラインを表示します。",
+  "InternalName": "HealPlan",
+  "AssemblyVersion": "1.0.0.0",
+  "RepoUrl": "https://github.com/imimsan/claude-code-book-template",
+  "Tags": ["healer", "raid", "timeline"],
+  "CategoryTags": ["Utility"],
+  "DalamudApiLevel": 14,
+  "LoadSync": false
+}
