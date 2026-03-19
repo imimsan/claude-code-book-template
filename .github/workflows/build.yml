@@ -32,17 +32,17 @@ jobs:
 
       - name: Build pluginmaster.json
         run: |
-          $manifestPath = "bin/x64/Release/SamplePlugin/SamplePlugin.json"
+          $manifestPath = "bin/x64/Release/HealPlan/HealPlan.json"
           $json = Get-Content $manifestPath | ConvertFrom-Json
           $baseUrl = "https://github.com/${{ github.repository }}/releases/latest/download"
           $json | Add-Member -Name "DownloadLinkInstall" -Value "$baseUrl/latest.zip" -MemberType NoteProperty -Force
           $json | Add-Member -Name "DownloadLinkUpdate" -Value "$baseUrl/latest.zip" -MemberType NoteProperty -Force
-          ConvertTo-Json @($json) | Set-Content "bin/x64/Release/SamplePlugin/pluginmaster.json"
+          ConvertTo-Json @($json) | Set-Content "bin/x64/Release/HealPlan/pluginmaster.json"
 
       - name: Upload Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            bin/x64/Release/SamplePlugin/latest.zip
-            bin/x64/Release/SamplePlugin/pluginmaster.json
+            bin/x64/Release/HealPlan/latest.zip
+            bin/x64/Release/HealPlan/pluginmaster.json
