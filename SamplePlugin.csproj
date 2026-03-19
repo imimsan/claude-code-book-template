@@ -2,5 +2,6 @@
   <PropertyGroup>
     <AssemblyName>HealPlan</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 </Project>
