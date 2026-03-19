@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Dalamud.Game.Command;
 using Dalamud.IoC;
@@ -19,6 +20,7 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] private IGameInteropProvider    GameInterop     { get; init; } = null!;
     [PluginService] private IDataManager            DataManager     { get; init; } = null!;
     [PluginService] private IPluginLog              Log             { get; init; } = null!;
+    [PluginService] private IChatGui               ChatGui         { get; init; } = null!;
 
     private const string CommandName = "/healplan";
 
@@ -39,7 +41,7 @@ public sealed class Plugin : IDalamudPlugin
     {
         _config   = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         _storage  = new ZoneStorage(PluginInterface.GetPluginConfigDirectory(), Log);
-        _recorder = new CombatRecorder(DutyState, ClientState, GameInterop, Log, _storage);
+        _recorder = new CombatRecorder(DutyState, ClientState, GameInterop, Log, ChatGui, _storage);
         _analyzer = new PlanAnalyzer(_storage, DataManager, Log);
 
         // プル完了時に推奨リストを再生成する
@@ -52,7 +54,7 @@ public sealed class Plugin : IDalamudPlugin
 
         CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
         {
-            HelpMessage = "HealPlan の設定ウィンドウを開きます"
+            HelpMessage = "HealPlan の設定ウィンドウを開きます。debug: ダミープルを注入します"
         });
 
         PluginInterface.UiBuilder.Draw      += OnDraw;
@@ -62,8 +64,40 @@ public sealed class Plugin : IDalamudPlugin
     // -----------------------------------------------------------------------
     // コマンド・UI コールバック
     // -----------------------------------------------------------------------
-    private void OnCommand(string command, string args) =>
+    private void OnCommand(string command, string args)
+    {
+        if (args.Trim() == "debug")
+        {
+            InjectDebugPulls();
+            return;
+        }
         _mainWindow.IsOpen = !_mainWindow.IsOpen;
+    }
+
+    private void InjectDebugPulls()
+    {
+        var zoneId  = _recorder.CurrentZoneId;
+        var records = _storage.LoadZone(zoneId);
+        var now     = DateTime.UtcNow;
+        for (var i = 0; i < 3; i++)
+        {
+            var pull = new PullRecord
+            {
+                ZoneId        = zoneId,
+                PullStartedAt = now.AddMinutes(-10 + i * 3),
+                Actions       = new List<ActionEntry>
+                {
+                    new() { Time = 5f,  ActionId = 16536, ActorId = "player" },
+                    new() { Time = 20f, ActionId = 16537, ActorId = "player" },
+                    new() { Time = 45f, ActionId = 16538, ActorId = "player" },
+                },
+            };
+            records.Add(pull);
+        }
+        _storage.SaveZone(zoneId, records);
+        RefreshRecommendations(zoneId);
+        ChatGui.Print($"[HealPlan] デバッグ: ゾーン {zoneId} に 3 件のダミープルを注入しました");
+    }
 
     private void OpenMainUi() =>
         _mainWindow.IsOpen = true;

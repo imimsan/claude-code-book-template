@@ -50,6 +50,7 @@ public class CombatRecorder : IDisposable
     private readonly IClientState _clientState;
     private readonly IPluginLog   _log;
     private readonly ZoneStorage  _storage;
+    private readonly IChatGui     _chatGui;
 
     // -----------------------------------------------------------------------
     // 状態
@@ -73,11 +74,13 @@ public class CombatRecorder : IDisposable
         IClientState          clientState,
         IGameInteropProvider  gameInterop,
         IPluginLog            log,
+        IChatGui              chatGui,
         ZoneStorage           storage)
     {
         _dutyState   = dutyState;
         _clientState = clientState;
         _log         = log;
+        _chatGui     = chatGui;
         _storage     = storage;
 
         // UseAction フックの設定
@@ -91,6 +94,7 @@ public class CombatRecorder : IDisposable
         catch (Exception ex)
         {
             _log.Error(ex, "[HealPlan] UseAction フックの設定に失敗。シグネチャを確認してください。");
+            _chatGui.PrintError("[HealPlan] フック失敗 - アクション記録無効");
         }
 
         _dutyState.DutyStarted   += OnDutyStarted;
@@ -115,6 +119,7 @@ public class CombatRecorder : IDisposable
             PullStartedAt = _pullStartTime,
         };
         _log.Information($"[HealPlan] プル開始 ゾーン:{zoneId}");
+        _chatGui.Print("[HealPlan] プル開始");
     }
 
     private void EndPull(bool save)
@@ -124,13 +129,15 @@ public class CombatRecorder : IDisposable
 
         _inPull = false;
 
-        if (save && _currentPull.Actions.Count > 0)
+        var pullDuration = (DateTime.UtcNow - _currentPull.PullStartedAt).TotalSeconds;
+        if (save && pullDuration >= 5.0)
         {
             var zoneId  = _currentPull.ZoneId;
             var records = _storage.LoadZone(zoneId);
             records.Add(_currentPull);
             _storage.SaveZone(zoneId, records);
             _log.Information($"[HealPlan] プル保存 ({_currentPull.Actions.Count} アクション)");
+            _chatGui.Print($"[HealPlan] {_currentPull.Actions.Count} アクション保存");
             PullCompleted?.Invoke(zoneId);
         }
 
